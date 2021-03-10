@@ -1,20 +1,30 @@
-# Refactoring
+# Backend with Express + MongoDB + RESTfull API + SOLID
+*show.md.lib.back*
 
-## Interfaces
-- server: express 
-    - middlewares
-    - routs: endpoints map
-- db: mongoose, pg
-- lib: bcryptjs
-- tpl: templates
+## Intro
+- 
 
-## DB
-```json
-{
-    name: 'del_fullaut',
-    user: 'user',
-    password: 'user123',
-    url:
-        'mongodb+srv://<user>:<password>@cluster0.laphr.mongodb.net/<name>?retryWrites=true&w=majority',
-}
+## Install
+```bash
+npm i
 ```
+
+## Run
+- dev
+    ```bash
+    npm run dev
+    ```
+- prod
+    ```bash
+    npm run start
+    ```
+
+## API endpoints
+'/' - main page
+'/api/users':
+    'get': *json* get all users
+    'post': *jspn* add new user
+'/api/users/:id':
+    'get': *json* get one user by id
+    'put': *jspn* edit new user by id
+    'delete': *jspn* delete user by id
