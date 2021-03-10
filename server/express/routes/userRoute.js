@@ -1,20 +1,14 @@
 const Router = require('express');
 const router = new Router();
 
-router.get('/users', (req, res) => {
-    res.send('users');
-});
-router.post('/users', (req, res) => {
-    res.send('users');
-});
-router.get('/users/:id', (req, res) => {
-    res.send('users');
-});
-router.put('/users/:id', (req, res) => {
-    res.send('users');
-});
-router.delete('/users/:id', (req, res) => {
-    res.send('users');
-});
+const usersController = require(global.pathLib.fromRoot(
+    'controllers/usersController',
+));
 
-module.exports = router;
+router.get('/users', usersController.getUsers);
+router.post('/users', usersController.postUsers);
+router.get('/users/:id', usersController.getUsersOne);
+router.put('/users/:id', usersController.putUsers);
+router.delete('/users/:id', usersController.deleteUsers);
+
+module.exports = router; 

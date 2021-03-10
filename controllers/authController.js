@@ -1,17 +1,9 @@
-const Users = require('./modules/Users');
-const Roles = require('./modules/Roles');
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
-const { secret } = require('../config');
 
-function generateAccessToken(id, roles) {
-    const payload = {
-        id,
-        roles,
-    };
-    return jwt.sign(payload, secret, { expiresIn: '24h' });
-}
+const moduleUsers = require(global.pathLib.fromRoot('/db/mongodb/moduleUsers'));
+// const Roles = require('./modules/Roles');
+const jwtLib = require(global.pathLib.fromRoot('/lib/jwtLib'));
 
 class authController {
     async register(req, res, next) {
@@ -24,12 +16,12 @@ class authController {
             const { username, password } = req.body;
             const hashPwd = bcrypt.hashSync(password, 7);
 
-            const candidate = await Users.findOne({ username });
+            const candidate = await moduleUsers.findOne({ username });
             if (candidate) {
                 res.status(400).json({ message: 'Username must be unique' });
             }
 
-            const user = new Users({
+            const user = moduleUsers({
                 username,
                 password: hashPwd,
                 roles: ['USER'],
@@ -46,7 +38,7 @@ class authController {
         try {
             const { username, password } = req.body;
 
-            const user = await Users.findOne({ username });
+            const user = await moduleUsers.findOne({ username });
             if (!user) {
                 res.status(400).json({ message: 'Username not found' });
             }
@@ -54,26 +46,15 @@ class authController {
                 res.status(400).json({ message: 'Password is wrong' });
             }
 
-            const token = generateAccessToken(user._id, user.roles);
+            const token = jwtLib.generateAccessToken({
+                id: user.id,
+                username: user.username,
+            });
 
             return res.json({ token });
         } catch (e) {
             console.log(e);
             res.status(400).json({ message: 'Login error' });
-        }
-    }
-    async getUsers(req, res, next) {
-        try {
-            // const userRole = new Roles();
-            // const adminRole = new Roles({ values: 'ADMIN' });
-            // await userRole.save();
-            // await adminRole.save();
-
-            const users = await Users.find()
-
-            res.send(users);
-        } catch (e) {
-            console.log(e);
         }
     }
 }

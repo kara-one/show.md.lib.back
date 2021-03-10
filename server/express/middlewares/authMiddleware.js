@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { secret } = require('../../../config');
+
+const { secret } = require(global.pathLib.fromRoot('/libs/jwt/config'));
 
 module.exports = (req, res, next) => {
     if (req.method === 'OPTIONS') {
@@ -12,8 +13,7 @@ module.exports = (req, res, next) => {
             return res.status(400).json({ message: 'User is not auth2' });
         }
 
-        const decodedData = jwt.verify(token, secret);
-        req.user = decodedData;
+        req.user = jwt.verify(token, secret);
 
         next();
     } catch (e) {
