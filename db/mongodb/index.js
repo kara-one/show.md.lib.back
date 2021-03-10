@@ -6,14 +6,18 @@ class MongoDb {
 
     async connect() {
         try {
-            const db_url = dbOptions.url
+            const uri = dbOptions.url
                 .replace('<user>', dbOptions.user)
                 .replace('<password>', dbOptions.password)
                 .replace('<name>', dbOptions.name);
 
-            await mongoose.connect(db_url, { useFindAndModify: false }, () =>
+            const options = dbOptions.options;
+
+            await mongoose.createConnection(uri, options, () =>
                 console.log(
+                    '\x1b[32m',
                     'Connection to the MongoDb has been established successfully.',
+                    '\x1b[0m',
                 ),
             );
         } catch (e) {

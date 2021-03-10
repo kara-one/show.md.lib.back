@@ -20,11 +20,11 @@ npm i
     ```
 
 ## API endpoints
-'/' - main page
-'/api/users':
-    'get': *json* get all users
-    'post': *jspn* add new user
-'/api/users/:id':
-    'get': *json* get one user by id
-    'put': *jspn* edit new user by id
-    'delete': *jspn* delete user by id
+- '/' - main page
+- '/api/users':
+    - 'get': *json* get all users
+    - 'post': *jspn* add new user
+- '/api/users/:id':
+    - 'get': *json* get one user by id
+    - 'put': *jspn* edit new user by id
+    - 'delete': *jspn* delete user by id
