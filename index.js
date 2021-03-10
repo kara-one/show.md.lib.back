@@ -5,7 +5,7 @@ const db = require('./db');
 
 async function init() {
     await server.start();
-    // await db.connect();
+    await db.connect();
 }
 
 init().catch((e) => {
