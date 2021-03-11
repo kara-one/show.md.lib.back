@@ -7,7 +7,7 @@ class moduleUsers {
         this.defaultRole = 'USER';
     }
     async getAll() {
-        return await Users.find({});
+        return await Users.find();
     }
     async getOne(params) {
         let filter = {};

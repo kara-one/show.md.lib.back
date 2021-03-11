@@ -2,7 +2,8 @@
 *show.md.lib.back*
 
 ## Intro
-- 
+- Tools: express.js, mongoose, RESTfull API, SOLID
+- Demo: https://show-md-lib-back.herokuapp.com/
 
 ## Install
 ```bash

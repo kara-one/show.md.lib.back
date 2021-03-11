@@ -13,7 +13,7 @@ class MongoDb {
 
             const options = dbOptions.options;
 
-            await mongoose.createConnection(uri, options, () =>
+            await mongoose.connect(uri, options, () =>
                 console.log(
                     '\x1b[32m',
                     'Connection to the MongoDb has been established successfully.',
