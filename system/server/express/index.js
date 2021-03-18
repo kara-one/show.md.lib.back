@@ -1,8 +1,9 @@
 const express = require('express');
 const http = require('http');
 const https = require('https');
+const cors = require('cors');
+const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-const path = require('path');
 
 const rootRouter = require('./routes');
 
@@ -15,13 +16,15 @@ class serverExpress {
 
         this.app = express();
 
-        /** Templates */
-        this.app.use(express.static(global.pathLib.fromRoot('/public')));
-
         /** Middlewares */
+        this.app.use(cors());
+        this.app.use(helmet());
+        this.app.use(cookieParser());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
-        this.app.use(cookieParser());
+
+        /** Static */
+        this.app.use(express.static(global.pathLib.fromRoot('/public')));
 
         /** Router */
         this.app.use('/', rootRouter);
