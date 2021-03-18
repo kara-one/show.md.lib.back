@@ -1,19 +1,19 @@
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 
-const moduleUsers = require(global.pathLib.fromRoot('/db/mongodb/moduleUsers'));
+const UsersModel = require(global.pathLib.fromRoot('/app/models/UsersModel'));
 // const Roles = require('./modules/Roles');
 
-class usersController {
+class UsersController {
     async getUsers(req, res, next) {
         try {
-            const data = await moduleUsers.getAll();
+            const data = await UsersModel.getAll();
 
             res.send(data);
         } catch (e) {
             console.log(e);
             res.status(400).json({
-                message: 'usersController/getUsers error',
+                message: 'UsersController/getUsers error',
                 e,
             });
         }
@@ -22,13 +22,13 @@ class usersController {
     async getUsersOne(req, res, next) {
         try {
             const params = req.params;
-            const data = await moduleUsers.getOne(params);
+            const data = await UsersModel.getOne(params);
 
             res.send(data);
         } catch (e) {
             console.log(e);
             res.status(400).json({
-                message: 'usersController/getUsersOne error',
+                message: 'UsersController/getUsersOne error',
                 e,
             });
         }
@@ -37,13 +37,13 @@ class usersController {
     async postUsers(req, res, next) {
         try {
             const body = req.body;
-            const data = await moduleUsers.add(body);
+            const data = await UsersModel.add(body);
 
             await res.status(200).send(data);
         } catch (e) {
             console.log(e);
             res.status(400).json({
-                message: 'usersController/postUsers error',
+                message: 'UsersController/postUsers error',
                 e,
             });
         }
@@ -53,13 +53,13 @@ class usersController {
         try {
             const id = req.params.id;
             const body = req.body;
-            const data = await moduleUsers.edit(id, body);
+            const data = await UsersModel.edit(id, body);
 
             res.send({ message: 'Upsate successful', data });
         } catch (e) {
             console.log(e);
             res.status(400).json({
-                message: 'usersController/putUsers error',
+                message: 'UsersController/putUsers error',
                 e,
             });
         }
@@ -68,17 +68,17 @@ class usersController {
     async deleteUsers(req, res, next) {
         try {
             const id = req.params.id;
-            const data = await moduleUsers.remove(id);
+            const data = await UsersModel.remove(id);
 
             res.send({ message: 'Delete successful', data });
         } catch (e) {
             console.log(e);
             res.status(400).json({
-                message: 'usersController/deleteUsers error',
+                message: 'UsersController/deleteUsers error',
                 e,
             });
         }
     }
 }
 
-module.exports = new usersController();
+module.exports = new UsersController();

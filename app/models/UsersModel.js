@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs');
 
-const Users = require('./modules/Users');
+const Users = require(global.pathLib.fromRoot('/system/db/mongodb/modules/Users'));
 
-class moduleUsers {
+class UsersModel {
     constructor() {
         this.defaultRole = 'USER';
     }
@@ -15,7 +15,7 @@ class moduleUsers {
         // Check data
         if (params.id) filter = { _id: params.id };
         else if (params.username) filter = { username: params.username };
-        else throw new Error('moduleUsers.getOne params invalid');
+        else throw new Error('UsersModel.getOne params invalid');
 
         return await Users.findOne(filter);
     }
@@ -33,12 +33,12 @@ class moduleUsers {
 
         // Validate
         const errorValidate = await user.validate();
-        if (errorValidate) throw new Error('moduleUsers.add', errorValidate);
+        if (errorValidate) throw new Error('UsersModel.add', errorValidate);
 
         return await user.save();
     }
     async edit(id, params) {
-        if (!id) throw new Error('moduleUsers.edit');
+        if (!id) throw new Error('UsersModel.edit');
 
         const data = params;
         // data.roles = [this.defaultRole];
@@ -47,7 +47,7 @@ class moduleUsers {
 
         // // Validate
         // const errorValidate = await newUser.validate();
-        // if (errorValidate) throw new Error('moduleUsers.edit', errorValidate);
+        // if (errorValidate) throw new Error('UsersModel.edit', errorValidate);
 
         return await Users.findOneAndUpdate({ _id: id }, data, {new: true});
     }
@@ -56,4 +56,4 @@ class moduleUsers {
     }
 }
 
-module.exports = new moduleUsers();
+module.exports = new UsersModel();

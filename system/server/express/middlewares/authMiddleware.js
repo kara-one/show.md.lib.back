@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const { secret } = require(global.pathLib.fromRoot('/libs/jwt/config'));
+const { secret } = require(global.pathLib.fromRoot('/app/libs/jwt/config'));
 
 module.exports = (req, res, next) => {
     if (req.method === 'OPTIONS') {

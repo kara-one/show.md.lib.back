@@ -2,10 +2,14 @@ const Router = require('express');
 const route = new Router();
 
 const userRouter = require('./userRoute');
+        
+/** Templates */
+route.set('views', global.pathLib.fromRoot('app/views'));
+route.set('view engine', 'jade');
 
 /** Main page */
 route.get('/', (req, res) => {
-    res.render('index', { title: 'REST API' });
+    res.render('index.jade', { title: 'REST API' });
 });
 
 /** Add here all routes */

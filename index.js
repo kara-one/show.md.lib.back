@@ -1,7 +1,7 @@
-global.pathLib = require('./libs/pathLib');
+global.pathLib = require('./system/libs/pathLib');
 
-const server = require('./server');
-const db = require('./db');
+const server = require('./system/server');
+const db = require('./system/db');
 
 async function init() {
     await server.start();

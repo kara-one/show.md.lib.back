@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const https = require('https');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 const rootRouter = require('./routes');
 
@@ -15,9 +16,7 @@ class serverExpress {
         this.app = express();
 
         /** Templates */
-        this.app.set('views', global.pathLib.fromRoot('views'));
-        this.app.set('view engine', 'jade');
-        this.app.use(express.static(global.pathLib.fromRoot('public')));
+        this.app.use(express.static(global.pathLib.fromRoot('/public')));
 
         /** Middlewares */
         this.app.use(express.json());

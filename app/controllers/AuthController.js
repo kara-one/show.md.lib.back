@@ -1,11 +1,11 @@
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 
-const moduleUsers = require(global.pathLib.fromRoot('/db/mongodb/moduleUsers'));
+const UsersModel = require(global.pathLib.fromRoot('/app/models/UsersModel'));
 // const Roles = require('./modules/Roles');
-const jwtLib = require(global.pathLib.fromRoot('/lib/jwtLib'));
+const jwtLib = require(global.pathLib.fromRoot('/app/lib/jwtLib'));
 
-class authController {
+class AuthController {
     async register(req, res, next) {
         try {
             const errors = validationResult(req);
@@ -16,12 +16,12 @@ class authController {
             const { username, password } = req.body;
             const hashPwd = bcrypt.hashSync(password, 7);
 
-            const candidate = await moduleUsers.findOne({ username });
+            const candidate = await UsersModel.findOne({ username });
             if (candidate) {
                 res.status(400).json({ message: 'Username must be unique' });
             }
 
-            const user = moduleUsers({
+            const user = UsersModel({
                 username,
                 password: hashPwd,
                 roles: ['USER'],
@@ -38,7 +38,7 @@ class authController {
         try {
             const { username, password } = req.body;
 
-            const user = await moduleUsers.findOne({ username });
+            const user = await UsersModel.findOne({ username });
             if (!user) {
                 res.status(400).json({ message: 'Username not found' });
             }
@@ -59,4 +59,4 @@ class authController {
     }
 }
 
-module.exports = new authController();
+module.exports = new AuthController();
