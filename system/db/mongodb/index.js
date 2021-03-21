@@ -6,10 +6,7 @@ class MongoDb {
 
     async connect() {
         try {
-            const uri = dbOptions.url
-                .replace('<user>', dbOptions.user)
-                .replace('<password>', dbOptions.password)
-                .replace('<name>', dbOptions.name);
+            const uri = dbOptions.url;
 
             const options = dbOptions.options;
 
