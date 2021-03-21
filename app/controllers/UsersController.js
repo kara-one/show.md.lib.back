@@ -1,51 +1,74 @@
-const bcrypt = require('bcryptjs');
-const { validationResult } = require('express-validator');
-
 const UsersModel = require(global.pathLib.fromRoot('/app/models/UsersModel'));
-// const Roles = require('./modules/Roles');
+const { errorWrap } = require(global.pathLib.fromRoot('/app/libs/errorLib'));
+const { tokenGenerate } = require(global.pathLib.fromRoot(
+    '/app/libs/tokenLib',
+));
 
 class UsersController {
     async getUsers(req, res, next) {
         try {
             const data = await UsersModel.getAll();
 
-            res.send(data);
+            if (data.errors) {
+                return res.status(422).json(data);
+            }
+
+            return res.json({ message: 'Get list successful', data });
         } catch (e) {
-            console.log(e);
-            res.status(400).json({
-                message: 'UsersController/getUsers error',
-                e,
-            });
+            return res
+                .status(400)
+                .json(errorWrap('getUsers', e, 'Unknown error'));
         }
     }
 
     async getUsersOne(req, res, next) {
         try {
-            const params = req.params;
-            const data = await UsersModel.getOne(params);
+            const data = await UsersModel.getOne(req.params);
 
-            res.send(data);
+            if (data.errors) {
+                return res.status(422).json(data);
+            }
+
+            return res.json({ message: 'Get one successful', data });
         } catch (e) {
-            console.log(e);
-            res.status(400).json({
-                message: 'UsersController/getUsersOne error',
-                e,
-            });
+            return res
+                .status(400)
+                .json(errorWrap('getUsersOne', e, 'Unknown error'));
         }
     }
 
     async postUsers(req, res, next) {
         try {
-            const body = req.body;
-            const data = await UsersModel.add(body);
+            const data = await UsersModel.add(req.body);
 
-            await res.status(200).send(data);
+            if (data.errors) {
+                return res.status(422).json(data);
+            }
+
+            return res.status(200).json({ message: 'Insert successful', data });
         } catch (e) {
-            console.log(e);
-            res.status(400).json({
-                message: 'UsersController/postUsers error',
-                e,
+            return res
+                .status(400)
+                .json(errorWrap('postUsers', e, 'Unknown error'));
+        }
+    }
+
+    async loginUsers(req, res, next) {
+        try {
+            const data = await UsersModel.getOne(req.body);
+
+            if (data.errors) {
+                return res.status(422).json(data);
+            }
+
+            const token = tokenGenerate({
+                id: data.id,
+                username: data.username,
             });
+
+            return res.json({ token, data });
+        } catch (e) {
+            return res.status(400).json(errorWrap('login', e, 'Unknown error'));
         }
     }
 
@@ -55,13 +78,15 @@ class UsersController {
             const body = req.body;
             const data = await UsersModel.edit(id, body);
 
-            res.send({ message: 'Upsate successful', data });
+            if (data.errors) {
+                return res.status(422).json(data);
+            }
+
+            return res.json({ message: 'Update successful', data });
         } catch (e) {
-            console.log(e);
-            res.status(400).json({
-                message: 'UsersController/putUsers error',
-                e,
-            });
+            return res
+                .status(400)
+                .json(errorWrap('putUsers', e, 'Unknown error'));
         }
     }
 
@@ -70,13 +95,11 @@ class UsersController {
             const id = req.params.id;
             const data = await UsersModel.remove(id);
 
-            res.send({ message: 'Delete successful', data });
+            return res.json({ message: 'Delete successful', data });
         } catch (e) {
-            console.log(e);
-            res.status(400).json({
-                message: 'UsersController/deleteUsers error',
-                e,
-            });
+            return res
+                .status(400)
+                .json(errorWrap('deleteUsers', e, 'Unknown error'));
         }
     }
 }

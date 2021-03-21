@@ -1,57 +1,88 @@
-const bcrypt = require('bcryptjs');
-
-const Users = require(global.pathLib.fromRoot('/system/db/mongodb/modules/Users'));
+const Users = require(global.pathLib.fromRoot(
+    '/system/db/mongodb/modules/Users',
+));
+const { errorWrap } = require(global.pathLib.fromRoot('/app/libs/errorLib'));
+const { cryptPwd, comparePwd } = require(global.pathLib.fromRoot(
+    '/app/libs/cryptLib',
+));
 
 class UsersModel {
     constructor() {
         this.defaultRole = 'USER';
     }
+
     async getAll() {
         return await Users.find();
     }
+
     async getOne(params) {
         let filter = {};
 
         // Check data
-        if (params.id) filter = { _id: params.id };
-        else if (params.username) filter = { username: params.username };
-        else throw new Error('UsersModel.getOne params invalid');
+        if (params.id) filter._id = params.id;
+        if (params.username) filter.username = params.username;
 
-        return await Users.findOne(filter);
+        if (Object.keys(filter) === 0) {
+            return errorWrap('params', params, 'Filter params not determined');
+        }
+
+        const data = await Users.findOne(filter);
+        if (!data) {
+            const keys = Object.keys(filter);
+            return errorWrap(keys[0], filter[keys[0]], 'User not found');
+        }
+
+        if (params.password && !comparePwd(params.password, data.password)) {
+            return errorWrap('password', params.password, 'Password is wrong');
+        }
+
+        return data;
     }
+
     async add(params) {
+        // Validate
+        const candidate = await this.getOne({ username: params.username });
+        if (candidate) {
+            return errorWrap(
+                'username',
+                params.username,
+                'Username must be unique',
+            );
+        }
+
+        // Check data
         const data = {
             roles: [this.defaultRole],
         };
-
-        // Check data
         if (params.username) data.username = params.username;
-        if (params.password)
-            data.password = bcrypt.hashSync(params.password, 7);
+        if (params.password) data.password = cryptPwd(params.password);
 
-        const user = new Users(data);
+        return await new Users(data).save();
+    }
+
+    async edit(id, params) {
+        if (!id) return errorWrap('id', id, 'Id invalid');
 
         // Validate
-        const errorValidate = await user.validate();
-        if (errorValidate) throw new Error('UsersModel.add', errorValidate);
-
-        return await user.save();
-    }
-    async edit(id, params) {
-        if (!id) throw new Error('UsersModel.edit');
+        const candidate = await this.getOne({ username: params.username });
+        if (candidate) {
+            return errorWrap(
+                'username',
+                params.username,
+                'Username must be unique',
+            );
+        }
 
         const data = params;
         // data.roles = [this.defaultRole];
-        if (params.password)
-            data.password = bcrypt.hashSync(params.password, 7);
+        if (params.password) data.password = cryptPwd(params.password);
 
-        // // Validate
-        // const errorValidate = await newUser.validate();
-        // if (errorValidate) throw new Error('UsersModel.edit', errorValidate);
-
-        return await Users.findOneAndUpdate({ _id: id }, data, {new: true});
+        return await Users.findOneAndUpdate({ _id: id }, data, { new: true });
     }
+
     async remove(id) {
+        if (!id) return errorWrap('id', id, 'Id invalid');
+
         return await Users.findByIdAndDelete(id);
     }
 }
