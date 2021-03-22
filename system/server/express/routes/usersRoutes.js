@@ -9,8 +9,10 @@ const {
     rulesValidation,
 } = require('../middlewares/validationResultMiddleware');
 const {
-    usernameRules,
-    passwordRules,
+    usernameAddRules,
+    passwordAddRules,
+    usernameEditRules,
+    passwordEditRules,
 } = require('../middlewares/usersRulesMiddleware');
 
 router
@@ -18,22 +20,22 @@ router
     .get('/users/:id', UsersController.getUsersOne)
     .put(
         '/users/:id',
-        usernameRules,
-        passwordRules,
+        usernameEditRules,
+        passwordEditRules,
         rulesValidation,
         UsersController.putUsers,
     )
     .post(
         '/users',
-        usernameRules,
-        passwordRules,
+        usernameAddRules,
+        passwordAddRules,
         rulesValidation,
         UsersController.postUsers,
     )
     .post(
         '/users/login',
-        usernameRules,
-        passwordRules,
+        usernameAddRules,
+        passwordAddRules,
         rulesValidation,
         UsersController.loginUsers,
     )

@@ -42,7 +42,7 @@ class UsersModel {
     async add(params) {
         // Validate
         const candidate = await this.getOne({ username: params.username });
-        if (candidate) {
+        if (!candidate.errors) {
             return errorWrap(
                 'username',
                 params.username,
@@ -64,13 +64,15 @@ class UsersModel {
         if (!id) return errorWrap('id', id, 'Id invalid');
 
         // Validate
-        const candidate = await this.getOne({ username: params.username });
-        if (candidate) {
-            return errorWrap(
-                'username',
-                params.username,
-                'Username must be unique',
-            );
+        if (params.username) {
+            const candidate = await this.getOne({ username: params.username });
+            if (candidate) {
+                return errorWrap(
+                    'username',
+                    params.username,
+                    'Username must be unique',
+                );
+            }
         }
 
         const data = params;
