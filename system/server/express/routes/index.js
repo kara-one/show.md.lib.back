@@ -1,19 +1,20 @@
 const Router = require('express');
 const route = new Router();
 
-const userRouter = require('./userRoute');
-        
+const userRouter = require('./usersRoutes');
+const rolesRoutes = require('./rolesRoutes');
+
 /** Templates */
 route.set('views', global.pathLib.fromRoot('app/views'));
 route.set('view engine', 'jade');
 
 /** Main page */
 route.get('/', (req, res) => {
-    res.render('index.jade', { title: 'REST API' });
+    res.render('index', { title: 'REST API' });
 });
 
 /** Add here all routes */
-route.use('/api', userRouter);
+route.use('/api', userRouter, rolesRoutes);
 
 /** 404 */
 route.use(function (req, res, next) {

@@ -64,6 +64,7 @@ class UsersController {
             const token = tokenGenerate({
                 id: data.id,
                 username: data.username,
+                roles: data.roles,
             });
 
             return res.json({ token, data });
