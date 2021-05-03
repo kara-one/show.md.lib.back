@@ -6,7 +6,7 @@ const rolesRoutes = require('./rolesRoutes');
 
 /** Templates */
 route.set('views', global.pathLib.fromRoot('app/views'));
-route.set('view engine', 'jade');
+route.set('view engine', 'pug');
 
 /** Main page */
 route.get('/', (req, res) => {
